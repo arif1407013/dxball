@@ -15,6 +15,13 @@ var box_collection = [
     yt: 0,
     yb: 500,
     solid: 'OUT'
+  },
+  {
+    xl: 225,
+    xr: 275,
+    yt: 20,
+    yb: 70,
+    solid: 'IN'
   }
 ];
 
@@ -25,6 +32,7 @@ var initial_position = {
 var current_speed = 50;
 
 draw_circle(250, 250);
+draw_block(225, 20);
 
 function draw_circle(x, y) {
   pencil.beginPath();
@@ -36,6 +44,18 @@ function draw_circle(x, y) {
 
 function remove_circle(x, y) {
   pencil.clearRect(x - 3, y - 3, 6, 6);
+}
+
+function draw_block(x, y, color){
+  pencil.beginPath();
+  pencil.lineWidth = '1';
+  pencil.strokeStyle = color;
+  pencil.rect(x, y, 50, 50);
+  pencil.stroke();
+}
+
+function remove_block(x, y){
+  pencil.clearRect(x, y, 50, 50);
 }
 
 function calc_pri() {
@@ -73,6 +93,7 @@ function re_calc_equ(h) {
 }
 
 function start_animation() {
+  animation_control.innerHTML = "Pause";
   window_const = window.setInterval(() => {
     let prev_sec = calc_sec(start_point?.pos);
     if(start_point?.axis === 'X'){
@@ -99,6 +120,7 @@ function start_animation() {
 }
 
 function stop_animation() {
+  animation_control.innerHTML = "Resume";
   window.clearInterval(window_const);
   window_const = null;
 }
@@ -108,10 +130,8 @@ function stop_animation() {
 animation_control.onclick = () => {
   if (start_point && path_equ) {
     if (window_const) {
-      animation_control.innerHTML = "Resume";
       stop_animation();
     } else {
-      animation_control.innerHTML = "Pause";
       start_animation();
     }
   }

@@ -39,31 +39,13 @@ function remove_circle(x, y) {
 }
 
 function calc_pri() {
-  // let tempBallBounce = ballWillBounce(start_point?.axis, start_point?.pos);
-  // if(!tempBallBounce){
-  //   if (start_point?.dir === "+") {
-  //     start_point.pos += 1;
-  //   } else if (start_point?.dir === "-") {
-  //     start_point.pos -= 1;
-  //   }
-  // } else {
-  //   re_calc_equ(start_point?.axis === "X" ? calc_sec(start_point?.pos) : start_point?.pos);
-  //   if (start_point?.dir === "+") {
-  //     start_point.dir = "-";
-  //     start_point.pos -= 1;
-  //   } else if (start_point?.dir === "-") {
-  //     start_point.dir = "+";
-  //     start_point.pos += 1;
-  //   }
-  // }
-  if (start_point?.pos > 0 && start_point?.pos < 500) {
+  if(!ballWillBounce(start_point?.axis, start_point?.pos)){
     if (start_point?.dir === "+") {
       start_point.pos += 1;
     } else if (start_point?.dir === "-") {
       start_point.pos -= 1;
     }
-  } 
-  else {
+  } else {
     re_calc_equ(start_point?.axis === "X" ? calc_sec(start_point?.pos) : start_point?.pos);
     if (start_point?.dir === "+") {
       start_point.dir = "-";
@@ -100,21 +82,7 @@ function start_animation() {
     }
     calc_pri();
     let now_sec = calc_sec(start_point?.pos);
-    // let tempBallBounce = ballWillBounce(start_point?.axis, now_sec)
-    // if(!tempBallBounce){
-    //   if(start_point?.axis === 'X'){
-    //     draw_circle(start_point?.pos, now_sec);
-    //   }else if(start_point?.axis === 'Y'){
-    //     draw_circle(now_sec, start_point?.pos);
-    //   }
-    // }else{
-    //   if(start_point?.axis === 'X'){
-    //     re_calc_equ(now_sec);
-    //   }else if(start_point?.axis === 'Y'){
-    //     re_calc_equ(start_point?.pos)
-    //   }
-    // }
-    if(now_sec > 0 && now_sec < 500){
+    if(!ballWillBounce(start_point?.axis, now_sec)){
       if(start_point?.axis === 'X'){
         draw_circle(start_point?.pos, now_sec);
       }else if(start_point?.axis === 'Y'){
@@ -198,8 +166,10 @@ speed_control.onchange = (event) => {
 function setValue(val){
   speed_control.value = val;
   current_speed = val;
-  stop_animation();
-  start_animation();
+  if(start_point && path_equ){
+    stop_animation();
+    start_animation();
+  }
 }
 
 for(let i = 0; i < 9; i++){
@@ -219,7 +189,7 @@ function ballWillBounce(axis, value){
         output = true;
       }
     }else if(axis === 'X' && collection?.solid === 'OUT'){
-      if(collection?.xl >= value && collection?.xr <= value){
+      if(collection?.xl >= value || collection?.xr <= value){
         output = true;
       }
     }else if(axis === 'Y' && collection?.solid === 'IN'){
@@ -227,12 +197,11 @@ function ballWillBounce(axis, value){
         output = true;
       }
     }else if(axis === 'Y' && collection?.solid === 'OUT'){
-      if(collection?.yt >= value && collection?.yb <= value){
+      if(collection?.yt >= value || collection?.yb <= value){
         output = true;
       }
     }
     return output;
   });
-  console.log(output);
   return output;
 }

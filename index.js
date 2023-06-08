@@ -59,15 +59,15 @@ function remove_block(x, y){
 }
 
 function calc_pri() {
-  let temp_y = calc_sec(start_point?.pos);
-  if(!ballWillBounce(start_point?.axis, start_point?.pos)){
+  let temp_sec = calc_sec(start_point?.pos);
+  if(!ballWillBounce(start_point?.axis, start_point?.pos, start_point?.pos, temp_sec)){
     if (start_point?.dir === "+") {
       start_point.pos += 1;
     } else if (start_point?.dir === "-") {
       start_point.pos -= 1;
     }
   } else {
-    re_calc_equ(start_point?.axis === "X" ? temp_y : start_point?.pos);
+    re_calc_equ(start_point?.axis === "X" ? temp_sec : start_point?.pos);
     if (start_point?.dir === "+") {
       start_point.dir = "-";
       start_point.pos -= 1;
@@ -87,7 +87,6 @@ function calc_sec(primary_pos) {
 }
 
 function re_calc_equ(h) {
-  console.log('equ ch')
   path_equ = {
     m: path_equ?.m * -1,
     c: 2 * h - path_equ?.c,
@@ -105,7 +104,7 @@ function start_animation() {
     }
     calc_pri();
     let now_sec = calc_sec(start_point?.pos);
-    if(!ballWillBounce(start_point?.axis, now_sec)){
+    if(!ballWillBounce(start_point?.axis, now_sec, start_point?.pos, now_sec)){
       if(start_point?.axis === 'X'){
         draw_circle(start_point?.pos, now_sec);
       }else if(start_point?.axis === 'Y'){
@@ -203,8 +202,12 @@ for(let i = 0; i < 9; i++){
 
 // BOUNCING EDGE CALCULATION
 
-function ballWillBounce(axis, value){
+function ballWillBounce(axis, value, primary_val, secondary_val){
   let output = false;
+  let actual_pos = {
+    x: axis === 'X' ? primary_val : secondary_val,
+    y: axis === 'Y' ? primary_val : secondary_val
+  }
   box_collection?.some((collection) => {
     if(axis === 'X' && collection?.solid === 'IN'){
       if(collection?.xl <= value && collection?.xr >= value){

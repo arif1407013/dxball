@@ -16,13 +16,13 @@ var box_collection = [
     yb: 500,
     solid: 'OUT'
   },
-  {
-    xl: 225,
-    xr: 275,
-    yt: 20,
-    yb: 70,
-    solid: 'IN'
-  }
+  // {
+  //   xl: 225,
+  //   xr: 275,
+  //   yt: 20,
+  //   yb: 70,
+  //   solid: 'IN'
+  // }
 ];
 
 var initial_position = {
@@ -32,7 +32,7 @@ var initial_position = {
 var current_speed = 50;
 
 draw_circle(250, 250);
-draw_block(225, 20);
+// draw_block(225, 20);
 
 function draw_circle(x, y) {
   pencil.beginPath();
@@ -59,6 +59,7 @@ function remove_block(x, y){
 }
 
 function calc_pri() {
+  let temp_y = calc_sec(start_point?.pos);
   if(!ballWillBounce(start_point?.axis, start_point?.pos)){
     if (start_point?.dir === "+") {
       start_point.pos += 1;
@@ -66,7 +67,7 @@ function calc_pri() {
       start_point.pos -= 1;
     }
   } else {
-    re_calc_equ(start_point?.axis === "X" ? calc_sec(start_point?.pos) : start_point?.pos);
+    re_calc_equ(start_point?.axis === "X" ? temp_y : start_point?.pos);
     if (start_point?.dir === "+") {
       start_point.dir = "-";
       start_point.pos -= 1;
@@ -86,6 +87,7 @@ function calc_sec(primary_pos) {
 }
 
 function re_calc_equ(h) {
+  console.log('equ ch')
   path_equ = {
     m: path_equ?.m * -1,
     c: 2 * h - path_equ?.c,
